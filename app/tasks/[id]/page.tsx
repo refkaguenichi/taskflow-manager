@@ -75,6 +75,20 @@ export default function TaskPage() {
     }
   };
 
+  const handleRefine = async () => {
+  if (!description.trim()) return;
+
+  const res = await fetch('/api/refine-description', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: description, type: 'task' }),
+  });
+
+  const data = await res.json();
+  if (data.refinedText) setDescription(data.refinedText);
+};
+
+
   if (loading || !user || !task) return null;
 
   return (
@@ -86,6 +100,7 @@ export default function TaskPage() {
         <Button onClick={handleUpdate} disabled={saving}>
           {saving ? 'Saving...' : 'Update Task'}
         </Button>
+        <Button onClick={handleRefine}>Refine Description</Button>
       </Card>
     </AppLayout>
   );
